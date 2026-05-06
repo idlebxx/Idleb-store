@@ -1,10 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { Mail, Lock, Loader2 } from 'lucide-react'
+import { Mail, Lock, Loader2, Shield } from 'lucide-react'
+
+// الإيميل والباسورد الثابت للمدير
+const ADMIN_EMAIL = 'admin@cybersec.com'
+const ADMIN_PASSWORD = 'Admin123456'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -20,6 +23,7 @@ export default function LoginPage() {
 
     const supabase = createClient()
 
+    // محاولة تسجيل الدخول
     const { error: authError } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -31,7 +35,12 @@ export default function LoginPage() {
       return
     }
 
-    router.push('/')
+    // بعد تسجيل الدخول، نتحقق إذا كان المدير
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+      router.push('/admin')
+    } else {
+      router.push('/')
+    }
     router.refresh()
   }
 
@@ -40,7 +49,16 @@ export default function LoginPage() {
       <div className="grid-bg" />
 
       <form onSubmit={handleSubmit} className="login-form">
-        <h1 className="login-heading">تسجيل الدخول</h1>
+        <div className="flex justify-center mb-4">
+          <div className="p-3 bg-primary/10 rounded-full">
+            <Shield className="w-8 h-8 text-primary" />
+          </div>
+        </div>
+        
+        <h1 className="login-heading text-center">تسجيل الدخول</h1>
+        <p className="text-center text-sm text-muted-foreground mb-6">
+          متجر الأمن السيبراني
+        </p>
 
         <div className="login-input-container">
           <Mail className="login-input-icon w-4 h-4 text-muted-foreground" />
@@ -83,9 +101,8 @@ export default function LoginPage() {
           )}
         </button>
 
-        <div className="login-signup-container">
-          <p>ليس لديك حساب؟</p>
-          <Link href="/auth/sign-up">إنشاء حساب</Link>
+        <div className="text-center text-xs text-muted-foreground mt-4">
+          <p>للمدير فقط: admin@cybersec.com</p>
         </div>
       </form>
     </div>
