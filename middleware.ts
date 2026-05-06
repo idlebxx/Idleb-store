@@ -1,11 +1,10 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-// الإيميل والباسورد الثابت للمدير
-const ADMIN_EMAIL = 'abnadleb08@gmail.com'
-const ADMIN_PASSWORD = 'sham20066shamgmail.com'
+// الإيميل الثابت للمدير
+const ADMIN_EMAIL = 'admin@cybersec.com'
 
-export async function updateSession(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
   })
@@ -49,6 +48,7 @@ export async function updateSession(request: NextRequest) {
   return supabaseResponse
 }
 
+// تحديد الصفحات التي يطبق عليها middleware
 export const config = {
-  matcher: ['/admin/:path*', '/api/admin/:path*'],
+  matcher: ['/admin/:path*'],
 }
